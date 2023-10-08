@@ -11,9 +11,10 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4 
-      - run: | 
-        ls -l
-        ls text -l
+      - name: ls
+        run: | 
+          ls -l
+          ls text -l
       - name: voicevos
         uses: ancient-blog/voicevox-text-to-speech@topic/#1
         with:

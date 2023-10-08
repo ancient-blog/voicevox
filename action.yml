@@ -1,0 +1,71 @@
+name: Generate Audio Data from the Modified Text File
+description: "First, use Voicevox to generate audio data (audio files) from the modified text file. Voicevox is a tool for text-to-speech synthesis, and it will convert the text into speech."
+
+inputs:
+  speaker:
+    description: 'Each VOICEVOX speaker possesses distinct voice qualities and character traits. Using different speakers can result in varying voice characteristics. Some speakers have cheerful and lively voices, while others have deep and cool-sounding voices. This allows for creating different expressions and atmospheres in synthesized speech.'
+    default: '1'
+    required: false
+    type: string
+  source:
+    description: 'audio text folder'
+    default: '${{ github.workspace }}/text'
+    required: true
+    type: string
+  destination:
+    description: 'audio destination folder'
+    default: '${{ github.workspace }}/artifact'
+    required: false
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 2
+    - name: Docker Set Up
+      shell: bash
+      run: |
+        docker-compose up -d --build
+        docker ps -a
+        docker-compose ps
+        ping -c 3 172.81.0.3
+    - name: Create Destination Folder
+      shell: bash
+      run: |
+        if [ ! -d "${{ inputs.destination }}" ]; then
+          mkdir -p "${{ inputs.destination }}"
+        fi
+
+    - name: Generate Audio
+      shell: bash
+      run: |
+        changed_files=$(git log --stat -1 --pretty=format:"" | grep -o -E '${{ inputs.source }}/[^/]+\.txt')
+        echo "$changed_files"
+
+        for filename in $changed_files
+        do
+          # convert to json
+          curl -s \
+            -X POST \
+            "localhost:50021/audio_query?speaker=${{ inputs.speaker }}" \
+            --get --data-urlencode text@"$filename" \
+            -o query.json
+          echo "Created query.json for $filename"
+    
+          cat query.json | grep -o -E "\"kana\":\".*\"" | xargs -I {} echo {}
+
+          filename_without_extension=$(echo "$filename" | sed 's/\.txt$//')
+
+          # conver to wav
+          curl -s \
+            -H "Content-Type: application/json" \
+            -X POST \
+            -d @query.json \
+            "localhost:50021/synthesis?speaker=3" \
+            -o ${filename_without_extension}.wav
+
+          echo "Finished processing $filename"
+        done

@@ -11,15 +11,10 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4 
-      - run: |
-          echo hello > test.txt
-          cat test.txt
-      - name: upload
-        uses: actions/upload-artifact@v3
-        with:
-          name: my-artifact
-          path: test.txt
-      - name: download latest artifact
+      - run: | 
+        ls -l
+        ls text -l
+      - name: voicevos
         uses: ancient-blog/voicevox-text-to-speech@topic/#1
         with:
           speaker: "3"

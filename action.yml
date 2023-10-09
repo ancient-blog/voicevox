@@ -36,12 +36,11 @@ runs:
           exit 1
         fi
         git log --stat -1 --pretty=format:""
-        rep = $(git log --stat -1 --pretty=format:"" | grep -o -E 'text/[^/]+\.txt')
+        rep=$(git log --stat -1 --pretty=format:"" | grep -o -E 'text/[^/]+\.txt')
         echo $rep
-        rep = $(git log --stat -1 --pretty=format:"" | grep -o -E '${{ inputs.source }}/[^/]+\.txt')
+        rep=$(git log --stat -1 --pretty=format:"" | grep -o -E '${{ inputs.source }}/[^/]+\.txt')
         echo $rep
-        rep = changed_files=$(git log --stat -1 --pretty=format:"" | grep -o -E '${{ inputs.source }}/[^/]+\.txt') || { echo "Error: Failed to retrieve changed files"; exit 1; }
-        echo $rep
+        changed_files=$(git log --stat -1 --pretty=format:"" | grep -o -E '${{ inputs.source }}/[^/]+\.txt') || { echo "Error: Failed to retrieve changed files"; exit 1; }
         echo "changed_files=${changed_files}" >> "$GITHUB_ENV"
     - name: Docker Set Up
       shell: bash

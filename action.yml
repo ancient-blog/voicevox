@@ -22,7 +22,7 @@ runs:
   using: "composite"
   steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 2
     - name: Docker Set Up
@@ -35,6 +35,8 @@ runs:
     - name: Create Destination Folder
       shell: bash
       run: |
+        ls -l
+        ls -l text
         if [ ! -d "${{ inputs.destination }}" ]; then
           mkdir -p "${{ inputs.destination }}"
         fi
@@ -42,6 +44,9 @@ runs:
     - name: Generate Audio
       shell: bash
       run: |
+        git log --stat -1 --pretty=format:""
+        git log --stat -1 --pretty=format:"" | grep -o -E '${{ inputs.source }}/[^/]+\.txt'
+
         changed_files=$(git log --stat -1 --pretty=format:"" | grep -o -E '${{ inputs.source }}/[^/]+\.txt') || { echo "Error: Failed to retrieve changed files"; exit 1; }
 
         if [ -z "$changed_files" ]; then

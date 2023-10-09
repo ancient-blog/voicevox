@@ -9,12 +9,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v4 
-      - name: ls
-        run: | 
-          ls -l
-          ls text -l
       - name: voicevos
         uses: ancient-blog/voicevox-text-to-speech@topic/#1
         with:

@@ -32,6 +32,9 @@ runs:
           echo "Error: Source directory '${{ inputs.source }}' does not exist."
           exit 1
         fi
+        git log --stat -1 --pretty=format:""
+        echo $(git log --stat -1 --pretty=format:"" | grep -o -E "$inputs.source/[^/]+\.txt")
+        $(git log --stat -1 --pretty=format:"" | grep -o -E "$inputs.source/[^/]+\.txt") || { echo "Error: Failed to retrieve changed files"; exit 1; }
     - name: Docker Set Up
       shell: bash
       run: |

@@ -35,6 +35,9 @@ runs:
           echo "Error: Source directory '${{ inputs.source }}' does not exist."
           exit 1
         fi
+        git log --stat -1 --pretty=format:""
+        git log --stat -1 --pretty=format:"" | grep -o -E 'text/[^/]+\.txt')
+        git log --stat -1 --pretty=format:"" | grep -o -E '${{ inputs.source }}/[^/]+\.txt')
         changed_files=$(git log --stat -1 --pretty=format:"" | grep -o -E '${{ inputs.source }}/[^/]+\.txt') || { echo "Error: Failed to retrieve changed files"; exit 1; }
         echo "changed_files=${changed_files}" >> "$GITHUB_ENV"
     - name: Docker Set Up

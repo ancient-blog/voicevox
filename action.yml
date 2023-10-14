@@ -28,19 +28,14 @@ runs:
     - name: Check Source Directory
       shell: bash
       run: |
-        pwd
-        echo ${{ inputs.source }}
-        ls -l ${{ inputs.source }}
         if [ ! -d "${{ inputs.source }}" ]; then
           echo "Error: Source directory '${{ inputs.source }}' does not exist."
           exit 1
         fi
-        git log --stat -1 --pretty=format:""
-        rep=$(git log --stat -1 --pretty=format:"" | grep -o -E 'text/[^/]+\.txt')
+        git log --stat -1 --pretty=format:""       
+        rep=$(git log --stat -1 --pretty=format:"" | grep -o -E '${{ inputs.source }}/[^/]+\.txt' | xargs realpath --relative-to="$PWD")
         echo $rep
-        rep=$(git log --stat -1 --pretty=format:"" | grep -o -E '${{ inputs.source }}/[^/]+\.txt')
-        echo $rep
-        changed_files=$(git log --stat -1 --pretty=format:"" | grep -o -E '${{ inputs.source }}/[^/]+\.txt') || { echo "Error: Failed to retrieve changed files"; exit 1; }
+        changed_files=$(git log --stat -1 --pretty=format:"" | grep -o -E '${{ inputs.source }}/[^/]+\.txt' | xargs realpath --relative-to="$PWD") || { echo "Error: Failed to retrieve changed files"; exit 1; }
         echo "changed_files=${changed_files}" >> "$GITHUB_ENV"
     - name: Docker Set Up
       shell: bash

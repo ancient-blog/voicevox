@@ -9,12 +9,12 @@ inputs:
     type: string
   source:
     description: 'audio text folder'
-    default: '${{ github.workspace }}/text'
+    default: 'text'
     required: true
     type: string
   destination:
     description: 'audio destination folder'
-    default: '${{ github.workspace }}/artifact'
+    default: 'artifact'
     required: false
     type: string
 
@@ -28,14 +28,16 @@ runs:
     - name: Check Source Directory
       shell: bash
       run: |
-        if [ ! -d "${{ inputs.source }}" ]; then
+        if [[ ! -d "${{ inputs.source }}" ]]; then
           echo "Error: Source directory '${{ inputs.source }}' does not exist."
           exit 1
+        else
+          if [[ ${{ inputs.source }} == $PWD/* ]]; then
+            _source=${{ inputs.source#$PWD }}
+          fi
         fi
-        git log --stat -1 --pretty=format:"" 
-        ${_source} = basename ${{ inputs.source }}
-        echo ${_source}
-        changed_files=$(git log --stat -1 --pretty=format:"" | grep -o -E '${_source}/[^/]+\.txt' || { echo "Error: Failed to retrieve changed files"; exit 1; }
+        changed_files=$(git log --diff-filter=d --name-only -1 --pretty=format:"" | grep -E "^${_source}/[^/]+\.txt$" || { echo "Error: Failed to retrieve changed files"; exit 1; }
+
         echo "changed_files=${changed_files}" >> "$GITHUB_ENV"
     - name: Docker Set Up
       shell: bash

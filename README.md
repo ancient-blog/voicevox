@@ -4,9 +4,9 @@
 
 | Name | Description | Default Value | Required | Type |
 | -------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------- | -------- | ------- |
-| speaker        | Selection of VOICEVOX speaker. Each speaker has distinct voice qualities and characteristics.                    | '1'                               | No       | String  |
-| source         | Path to the folder containing text files from which audio data will be generated.                                | '${{ github.workspace }}/text' | Yes       | String  |
-| destination    | Path to the folder where the generated audio data will be stored.                                                   | '${{ github.workspace }}/artifact' | No       | String  |
+| speaker        | Selection of VOICEVOX speaker. Each speaker has distinct voice qualities and characteristics. | '1' | No | String  |
+| source         | Path to the folder containing text files from which audio data will be generated. | 'text' | Yes | String |
+| destination | Path to the folder where the generated audio data will be stored. | 'artifact' | No | String  |
 
 ## Outputs
 

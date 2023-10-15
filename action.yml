@@ -33,7 +33,7 @@ runs:
           exit 1
         else
           if [[ ${{ inputs.source }} == $PWD/* ]]; then
-            _source=${{ inputs.source#$PWD }}
+            _source="${{ inputs.source#$PWD }}"
           fi
         fi
         changed_files=$(git log --diff-filter=d --name-only -1 --pretty=format:"" | grep -E "^${_source}/[^/]+\.txt$" || { echo "Error: Failed to retrieve changed files"; exit 1; }

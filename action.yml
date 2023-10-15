@@ -32,11 +32,11 @@ runs:
           echo "Error: Source directory '${{ inputs.source }}' does not exist."
           exit 1
         else
-          if [[ ${{ inputs.source }} == $PWD/* ]]; then
-            _source="${{ inputs.source#$PWD }}"
+          if [[ ${{ inputs.source }} == ${{ github.workspace }}/* ]]; then
+            _source="${{ inputs.source#${{ github.workspace }} }}"
           fi
         fi
-        changed_files=$(git log --diff-filter=d --name-only -1 --pretty=format:"" | grep -E "^${_source}/[^/]+\.txt$" || { echo "Error: Failed to retrieve changed files"; exit 1; }
+        changed_files=$(git log --diff-filter=d --name-only -1 --pretty=format:"" | grep -E "^${_source}/[^/]+\.txt$" || { echo "Error: Failed to retrieve changed files"; exit 1; }; )
 
         echo "changed_files=${changed_files}" >> "$GITHUB_ENV"
     - name: Docker Set Up

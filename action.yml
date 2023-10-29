@@ -30,18 +30,16 @@ runs:
       run: |
         source_path="${{ inputs.source }}"
         workspace_path="${{ github.workspace }}"
-        echo source_path
-        echo workspace_path
         if [[ ! -d "${{ inputs.source }}" ]]; then
           echo "Error: Source directory '${{ inputs.source }}' does not exist."
           exit 1
         else
           if [[ ${{ inputs.source }} == ${{ github.workspace }}/* ]]; then
             _source="${source_path#$workspace_path}"
-            echo _source
+            echo ${_source}
           else
             _source=source_path
-            echo _source
+            echo ${_source}
           fi
         fi
         changed_files=$(git log --diff-filter=d --name-only -1 --pretty=format:"" | grep -E "^${_source}/[^/]+\.txt$" || { echo "Error: Failed to retrieve changed files"; exit 1; }; )

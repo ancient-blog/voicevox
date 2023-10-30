@@ -13,9 +13,9 @@ jobs:
         uses: ancient-blog/voicevox-text-to-speech@topic/#1
         with:
           speaker: "3"
-          source: text
-          destination: audio
+          source: ${{ github.workspace }}/text
+          destination: ${{ github.workspace }}/audio
 
       - name: Display structure of downloaded files
         run: ls -l
-        working-directory: audio/
+        working-directory: ${{ github.workspace }}/audio/

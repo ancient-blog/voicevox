@@ -29,14 +29,13 @@ runs:
       shell: bash
       run: |
         source_path="${{ inputs.source }}"
-        workspace_path="${{ github.workspace }}/"
+        workspace_path="${{ github.workspace }}"
+        _source=$source_path
         if [[ ! -d $source_path ]]; then
           echo "Error: Source directory '$source_path' does not exist."
           exit 1
         elif [[ $source_path == $workspace_path/* ]]; then
           _source="${source_path#$workspace_path}"
-        else
-          _source=$source_path
         fi
         echo $_source
         echo ------

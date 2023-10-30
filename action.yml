@@ -29,7 +29,7 @@ runs:
       shell: bash
       run: |
         source_path="${{ inputs.source }}"
-        workspace_path="${{ github.workspace }}"
+        workspace_path="${{ github.workspace }}/"
         if [[ ! -d $source_path ]]; then
           echo "Error: Source directory '$source_path' does not exist."
           exit 1
@@ -39,10 +39,9 @@ runs:
           _source=$source_path
         fi
         echo $_source
-        git log --diff-filter=d --name-only -1 --pretty=format:""
-        git log --diff-filter=d --name-only -1 --pretty=format:"" | grep -E "^${_source}/[^/]+\.txt$"
+        echo ------
         changed_files=$(git log --diff-filter=d --name-only -1 --pretty=format:"" | grep -E "^${_source}/[^/]+\.txt$" || { echo "Error: Failed to retrieve changed files"; exit 1; }; )
-
+        echo ------
         echo "changed_files=${changed_files}" >> "$GITHUB_ENV"
     - name: Docker Set Up
       shell: bash
